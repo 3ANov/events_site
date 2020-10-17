@@ -1,28 +1,20 @@
-from pathlib import Path
 import environ
+from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
 
+env.read_env(env.str('./', '.env'))
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# reading .env file
-environ.Env.read_env(BASE_DIR.__str__())
-
-print(env('TEST'))
-
-# Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
 SECRET_KEY = env('SECRET_KEY')
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+DEBUG = env('DEBUG')
 
-# Application definition
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -66,8 +58,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'events_site.wsgi.application'
 
-# Password validation
-# https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -85,9 +76,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -98,8 +86,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
 
