@@ -1,3 +1,5 @@
+from functools import partial
+
 from django.db import models
 from django.contrib.gis.db import models as gismodels
 
@@ -23,12 +25,12 @@ class Place(models.Model):
 
 class Event(models.Model):
     """Мероприятие"""
-    name = models.CharField(max_length=200)
+    title = models.CharField(max_length=200)
     description = models.CharField(max_length=300)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.title
 
 
 class EventInstance(models.Model):
@@ -36,4 +38,7 @@ class EventInstance(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE)
     time_start = models.DateTimeField()
     time_end = models.DateTimeField()
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event_instances')
+
+    def __str__(self):
+        return '%d: Место: %s  Город: %s %s %s' % (self.id, self.place.name,  self.place.city, self.time_start, self.time_end)

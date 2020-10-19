@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'users',
     'events',
     'leaflet',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -103,4 +104,12 @@ DATABASES = {
          'HOST': env.str('DB_HOST'),
          'PORT': env.str('DB_PORT'),
     },
+}
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
 }
