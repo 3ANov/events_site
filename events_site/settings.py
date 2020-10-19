@@ -8,7 +8,7 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 
-env.read_env(env.str('./', '.env'))
+env.read_env()
 
 SECRET_KEY = env('SECRET_KEY')
 
