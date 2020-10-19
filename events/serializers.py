@@ -1,10 +1,16 @@
 from rest_framework import serializers
 
-from events.models import Event
+from events.models import Event, EventInstance
+
+
+class EventInstanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventInstance
+        exclude = ['event']
 
 
 class EventSerializer(serializers.ModelSerializer):
-    event_instances = serializers.StringRelatedField(many=True)
+    event_instances = EventInstanceSerializer(many=True)
 
     class Meta:
         model = Event
