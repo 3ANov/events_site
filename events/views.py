@@ -9,7 +9,7 @@ from events.serializers import EventSerializer
 
 class EventsSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows event to be viewed or edited.
     """
     queryset = Event.objects.all()
     serializer_class = EventSerializer
