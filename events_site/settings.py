@@ -23,8 +23,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'users',
     'events',
+    'leaflet',
 ]
 
 MIDDLEWARE = [
@@ -93,5 +95,12 @@ AUTH_USER_MODEL = 'users.User'
 
 # Parse database connection url strings like psql://user:pass@127.0.0.1:8458/db
 DATABASES = {
-    'default': env.db('SQLITE_URL', default='sqlite:////db.sqlite3'),
+    'default': {
+         'ENGINE': env.str('DB_ENGINE', 'django.contrib.gis.db.backends.postgis'),
+         'NAME': env.str('DB_NAME'),
+         'USER': env.str('DB_USER'),
+         'PASSWORD': env.str('DB_PASSWORD'),
+         'HOST': env.str('DB_HOST'),
+         'PORT': env.str('DB_PORT'),
+    },
 }

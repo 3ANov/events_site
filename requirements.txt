@@ -7,3 +7,5 @@ Markdown==3.3.1
 pkg-resources==0.0.0
 pytz==2020.1
 sqlparse==0.4.1
+psycopg2==2.8.6
+django-leaflet==0.27.1
