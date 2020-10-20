@@ -23,6 +23,7 @@ class EventInstanceSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     event_instances = EventInstanceSerializer(many=True)
+    category = serializers.CharField()
 
     class Meta:
         model = Event
@@ -31,10 +32,15 @@ class EventSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         event_instances = validated_data.pop('event_instances')
-        event = Event.objects.create(**validated_data)
-
+        category = Category.objects.get_or_create(name=validated_data.pop('category'))[0]
+        event = Event.objects.create(category=category, **validated_data)
         for event_instance in event_instances:
             place = Place.objects.create(**event_instance.pop('place'))
             EventInstance.objects.create(event=event, place=place, **event_instance)
 
         return event
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.save()
+        return instance
