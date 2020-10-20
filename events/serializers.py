@@ -8,7 +8,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = '__all__'
+        exclude = ['id']
 
 
 class EventInstanceSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class EventInstanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventInstance
-        exclude = ['event']
+        exclude = ['id', 'event']
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -24,7 +24,24 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ['id', 'title', 'event_instances']
+        fields = ['id', 'title', 'description', 'event_instances', 'category']
         read_only_fields = ['id']
 
+    def create(self, validated_data):
+        event_instances = validated_data.pop('event_instances')
+
+        event = Event.objects.create(**validated_data)
+        for event_instance in event_instances:
+
+            place_data = validated_data.pop('place', None)
+            print(place_data)
+            if place_data:
+                place = Place.objects.get_or_create(**place_data)[0]
+                validated_data['place'] = place
+                EventInstance.objects.create(event=event, place=place, **event_instance)
+            else:
+                raise serializers.ValidationError(
+                    'Not place data'
+                )
+        return event
 
