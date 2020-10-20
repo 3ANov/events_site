@@ -27,10 +27,12 @@ class EventTests(APITestCase):
                     "time_end": "2020-10-19T16:16:04Z"
                 }
             ],
-            "category": "Тур"
+            "category": 1
         }
 
-        response = self.client.post('events/', data, format='json')
+        client = APIClient()
+        client.login(username='admin@admin.com', password='admin')
+        response = client.post('http://127.0.0.1/api/events/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Event.objects.count(), 1)
         self.assertEqual(Event.objects.get().title, 'Новый ивент 22')

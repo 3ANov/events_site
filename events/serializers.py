@@ -23,7 +23,6 @@ class EventInstanceSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     event_instances = EventInstanceSerializer(many=True)
-    category = serializers.StringRelatedField()
 
     class Meta:
         model = Event
@@ -32,21 +31,10 @@ class EventSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         event_instances = validated_data.pop('event_instances')
-        category = validated_data.pop('category', None)
+        event = Event.objects.create(**validated_data)
 
-        event = Event.objects.create(category=Category.objects.get_or_create(**category)[0],
-                                     **validated_data)
         for event_instance in event_instances:
+            place = Place.objects.create(**event_instance.pop('place'))
+            EventInstance.objects.create(event=event, place=place, **event_instance)
 
-            place_data = validated_data.pop('place', None)
-            print(place_data)
-            if place_data:
-                place = Place.objects.get_or_create(**place_data)[0]
-                validated_data['place'] = place
-                EventInstance.objects.create(event=event, place=place, **event_instance)
-            else:
-                raise serializers.ValidationError(
-                    'Not place data'
-                )
         return event
-
