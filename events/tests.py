@@ -1,38 +1,59 @@
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
-from events.models import Event
+from unittest import TestCase
+from rest_framework.test import APIRequestFactory, force_authenticate
+from events.models import Event, Category
+from events.views import EventsSet
+from users.models import User
 
 
-class EventTests(APITestCase):
-    def test_create_account(self):
+class ViewsTestCase(TestCase):
+    def setUp(self):
+
+        # Create a test instance
+        self.category = Category.objects.create(name="Тестовая категория")
+        self.event = Event.objects.create(title="Тестовый заголовок",
+                                          description="Тестовое описание",
+                                          category=self.category)
+
+        # Create auth user for views using api request factory
+        self.username = 'admin@admin.com'
+        self.password = 'admin'
+        self.user = User.objects.get(email=self.username)
+
+    def tearDown(self):
+        pass
+
+    @classmethod
+    def setup_class(cls):
+        """setup_class() before any methods in this class"""
+        pass
+
+    @classmethod
+    def teardown_class(cls):
+        """teardown_class() after any methods in this class"""
+        pass
+
+    def shortDescription(self):
+        return None
+
+    def test_view_set1(self):
         """
-        Ensure we can create a new event object.
+        No auth example
         """
+        api_request = APIRequestFactory().get("events")
+        detail_view = EventsSet.as_view(actions={'get': 'retrieve'})
+        response = detail_view(api_request, pk=self.event.pk)
+        self.assertEqual(response.status_code, 200)
 
-        data = {
-            "title": "Новый ивент 22",
-            "description": "Новое описание ивента",
-            "event_instances": [
-                {
-                    "place": {
-                        "geom": {
-                            "latitude": 50.736455,
-                            "longitude": 66.09375
-                        },
-                        "name": "Новый",
-                        "city": "Урюпинск"
-                    },
-                    "time_start": "2020-10-19T16:16:03Z",
-                    "time_end": "2020-10-19T16:16:04Z"
-                }
-            ],
-            "category": 1
-        }
+    def test_view_set2(self):
+        """
+        Auth using force_authenticate
+        """
+        factory = APIRequestFactory()
+        user = User.objects.get(email=self.username)
+        detail_view = EventsSet.as_view({'get': 'retrieve'})
 
-        client = APIClient()
-        client.login(username='admin@admin.com', password='admin')
-        response = client.post('http://127.0.0.1/api/events/', data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Event.objects.count(), 1)
-        self.assertEqual(Event.objects.get().title, 'Новый ивент 22')
+        # Make an authenticated request to the view...
+        api_request = factory.get('')
+        force_authenticate(api_request, user=user)
+        response = detail_view(api_request, pk=self.event.pk)
+        self.assertEqual(response.status_code, 200)
