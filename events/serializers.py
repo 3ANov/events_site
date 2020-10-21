@@ -43,5 +43,16 @@ class EventSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
         instance.description = validated_data.get('description', instance.description)
+
+        new_category = validated_data.get('category', instance.category)
+        instance.category = Category.objects.get_or_create(name=new_category)[0]
+
+        EventInstance.objects.filter(event=instance).delete()
+
+        event_instances = validated_data.get('event_instances')
+        for event_instance in event_instances:
+            place = Place.objects.create(**event_instance.pop('place'))
+            EventInstance.objects.create(event=instance, place=place, **event_instance)
+
         instance.save()
         return instance
