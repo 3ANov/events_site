@@ -30,23 +30,22 @@ class EventsSet(viewsets.ModelViewSet):
 
 
 class EventDistanceView(APIView):
+    pagination_class = StandardResultsSetPagination
+    serializer_class = EventSerializer
 
     permission_classes = [AllowAny]
 
     def get(self, request):
-        paginator = StandardResultsSetPagination()
 
         lat = float(request.query_params.get('lat', None))
         long = float(request.query_params.get('long', None))
-        radius = request.query_params.get('long', None)
+        radius = float(request.query_params.get('radius', None))
 
         point = Point(long, lat)
-        result_set_events = EventInstance.objects.filter(
+        result_set_events = Event.objects.filter(event_instances__in=EventInstance.objects.filter(
             place__in=Place.objects.filter(
-                geom__distance_lte=(point, D(km=radius))))\
-            .values('event')
-        print(result_set_events)
-        result_page = paginator.paginate_queryset(result_set_events, request)
-        serializer = EventSerializer(result_page, many=True, context={'request': request})
-        response = Response(serializer.data, status=status.HTTP_200_OK)
-        return response
+                geom__distance_lt=(point, D(km=radius)))))
+
+        serializer = self.serializer_class(result_set_events, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
