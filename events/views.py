@@ -36,16 +36,20 @@ class EventDistanceView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        try:
+            lat = float(request.query_params.get('lat', None))
+            long = float(request.query_params.get('long', None))
+            radius = float(request.query_params.get('radius', None))
 
-        lat = float(request.query_params.get('lat', None))
-        long = float(request.query_params.get('long', None))
-        radius = float(request.query_params.get('radius', None))
+            point = Point(long, lat)
+            result_set_events = Event.objects.filter(event_instances__in=EventInstance.objects.filter(
+                place__in=Place.objects.filter(
+                    geom__distance_lt=(point, D(km=radius)))))
 
-        point = Point(long, lat)
-        result_set_events = Event.objects.filter(event_instances__in=EventInstance.objects.filter(
-            place__in=Place.objects.filter(
-                geom__distance_lt=(point, D(km=radius)))))
+            serializer = self.serializer_class(result_set_events, many=True, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ValueError:
+            return Response({'Value error'})
 
-        serializer = self.serializer_class(result_set_events, many=True, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
 

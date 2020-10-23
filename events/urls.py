@@ -5,7 +5,6 @@ from events import views
 
 router = routers.DefaultRouter()
 router.register(r'events', views.EventsSet)
-#router.register(r'geosearch', views.EventDistanceView, basename='events')
 
 
 # Wire up our API using automatic URL routing.
