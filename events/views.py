@@ -45,7 +45,7 @@ class EventDistanceView(APIView):
             long = float(request.query_params.get('long', None))
             radius = float(request.query_params.get('radius', None))
 
-            point = Point(long, lat)
+            point = Point((long, lat))
             result_set_events = Event.objects.filter(event_instances__in=EventInstance.objects.filter(
                 place__in=Place.objects.filter(
                     geom__distance_lt=(point, D(km=radius)))))
