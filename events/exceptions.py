@@ -1,0 +1,2 @@
+class EmptyRequestError(Exception):
+    pass

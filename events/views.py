@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 
 from events.models import Event, Place, EventInstance
 from events.serializers import EventSerializer
+from events.exceptions import EmptyRequestError
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -36,7 +37,10 @@ class EventDistanceView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+
         try:
+            if len(request.query_params) == 0:
+                raise EmptyRequestError()
             lat = float(request.query_params.get('lat', None))
             long = float(request.query_params.get('long', None))
             radius = float(request.query_params.get('radius', None))
@@ -48,8 +52,11 @@ class EventDistanceView(APIView):
 
             serializer = self.serializer_class(result_set_events, many=True, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except ValueError:
-            return Response({'Value error'})
+        except (ValueError, TypeError):
+            return Response({'Wrong request'})
+        except EmptyRequestError:
+            return Response({'Empty request'})
+
 
 
 
