@@ -1,3 +1,5 @@
+import os
+
 import environ
 from pathlib import Path
 
@@ -29,6 +31,7 @@ INSTALLED_APPS = [
     'leaflet',
     'rest_framework',
     'django_filters',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -91,6 +94,19 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "assets"),
+    os.path.join(BASE_DIR, "frontend/dist"),
+]
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'dist/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'frontend', 'webpack-stats.json')
+    }
+}
+
 
 AUTH_USER_MODEL = 'users.User'
 
