@@ -1,11 +1,11 @@
 <template>
   <div class="">
     <h1 style="text-align: center;">Datatable with 3rd Party API</h1>
-     <blog-post
-      v-for="event in results"
-      v-bind:key="post.id"
-      v-bind:post="post"
-    ></blog-post>
+    <ul id="example-1">
+      <li v-for="event in results" v-bind:key="event.id">
+        {{ event.title }}
+      </li>
+    </ul>
   </div>
 </template>
 <style scoped></style>
