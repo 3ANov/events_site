@@ -1,15 +1,15 @@
 <template>
    <div id="app">
-      <DatatableComponent/>
+      <EventsListComponent/>
    </div>
 </template>
 
 <script>
-import DatatableComponent from './components/DatatableComponent';
+import EventsListComponent from './components/EventsListComponent';
 export default {
   name: 'App',
   components: {
-    DatatableComponent,
+    EventsListComponent,
   },
   data: () => ({
     //
