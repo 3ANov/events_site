@@ -13,7 +13,7 @@ from events.exceptions import EmptyRequestError
 
 
 class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 4
     page_size_query_param = 'per_page'
     max_page_size = 10
 
@@ -22,7 +22,7 @@ class EventsSet(viewsets.ModelViewSet):
     """
     API endpoint that allows event to be viewed or edited.
     """
-    queryset = Event.objects.all()
+    queryset = Event.objects.all().order_by('id')
     serializer_class = EventSerializer
     http_method_names = ['get', 'post', 'put']
     filter_backends = (filters.DjangoFilterBackend,)
