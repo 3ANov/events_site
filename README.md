@@ -1,6 +1,14 @@
-Проект “Афиша” (Тестовое задание):
+###Проект “Афиша” (Тестовое задание):
 
- 
+Для запуска проекта:  
+**python manage.py runserver** - backend  
+**npm run serve** - frontend
+
+Использованы:  
+* backend: **Django, Django REST framework** 
+* frontend: **Vue.js**
+
+####ОПИСАНИЕ ЗАДАНИЯ
 Стоит задача создать web-приложение “Афиша” на **Django** с хранением данных в БД 
 **PostgreSQL**. 
  
@@ -83,6 +91,3 @@
 детали event’а со списком инстансов:
     ![](/docs/example.png)
 
-Для запуска проекта:  
-**python manage.py runserver** - backend  
-**npm run serve** - frontend
