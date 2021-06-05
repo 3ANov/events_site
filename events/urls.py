@@ -12,5 +12,4 @@ router.register(r'events', views.EventsSet)
 urlpatterns = [
     path('events/geosearch', views.EventDistanceView.as_view()),
     path('', include(router.urls)),
-
 ]

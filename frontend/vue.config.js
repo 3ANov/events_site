@@ -24,8 +24,7 @@ module.exports = {
       .hotOnly(true)
       .watchOptions({ poll: 1000 })
       .https(false)
-      .disableHostCheck(true)
-      .headers({ "Access-Control-Allow-Origin": ["*"] });
+      .disableHostCheck(true);
   }
 
   // uncomment before executing 'npm run build'
