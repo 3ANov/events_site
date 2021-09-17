@@ -19,6 +19,10 @@ class ViewsTestCase(TestCase):
         self.password = 'admin'
         self.user = User.objects.get(email=self.username)
 
+    def test_category(self):
+        category = Category.objects.filter(name="Тестовая категория")
+        self.assertEqual(category.count(), 27)
+
     def tearDown(self):
         pass
 
